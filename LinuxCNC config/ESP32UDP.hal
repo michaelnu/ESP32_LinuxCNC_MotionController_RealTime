@@ -14,7 +14,6 @@ loadrt scale count=2
 loadrt abs count=1
 #loadrt pwmgen output_type=0
 
-
 addf    esp32udp                    udp-thread
 addf    esp32udp.udp-receive        udp-thread
 
@@ -47,17 +46,17 @@ setp    probe.debounce.delay        3
 
 setp    comp-limit.maxa             20
 
-setp    esp32udp.0.dirsetup              [JOINT_0]STEPGEN_DIRSETUP
-setp    esp32udp.1.dirsetup              [JOINT_1]STEPGEN_DIRSETUP
-setp    esp32udp.2.dirsetup              [JOINT_2]STEPGEN_DIRSETUP
+setp    esp32udp.0.dirsetup         [JOINT_0]STEPGEN_DIRSETUP
+setp    esp32udp.1.dirsetup         [JOINT_1]STEPGEN_DIRSETUP
+setp    esp32udp.2.dirsetup         [JOINT_2]STEPGEN_DIRSETUP
 
-setp    esp32udp.0.accel                 [JOINT_0]STEPGEN_ACCEL
-setp    esp32udp.1.accel                 [JOINT_1]STEPGEN_ACCEL
-setp    esp32udp.2.accel                 [JOINT_2]STEPGEN_ACCEL
+setp    esp32udp.0.accel            [JOINT_0]STEPGEN_ACCEL
+setp    esp32udp.1.accel            [JOINT_1]STEPGEN_ACCEL
+setp    esp32udp.2.accel            [JOINT_2]STEPGEN_ACCEL
 
-setp    esp32udp.0.scale                 [JOINT_0]SCALE
-setp    esp32udp.1.scale                 [JOINT_1]SCALE
-setp    esp32udp.2.scale                 [JOINT_2]SCALE
+setp    esp32udp.0.scale            [JOINT_0]SCALE
+setp    esp32udp.1.scale            [JOINT_1]SCALE
+setp    esp32udp.2.scale            [JOINT_2]SCALE
 
 setp    pid.x.Pgain                 [JOINT_0]PID_GAIN_P
 setp    pid.x.Igain                 [JOINT_0]PID_GAIN_I
@@ -116,61 +115,54 @@ setp    pid.z.error-previous-target [JOINT_2]PID_EPT
 net     feedrate-override  halui.feed-override.value  esp32udp.feedrate-override
 
 #======= X axis ===========================
-
 net     x-pos-cmd       joint.0.motor-pos-cmd       pid.x.command       esp32udp.0.position-cmd
 net     x-vel-cmd-pre   joint.0.vel-cmd             pid.x.command-deriv
-net     x-pos-fb        esp32udp.0.position-fb           pid.x.feedback      joint.0.motor-pos-fb
-net     x-vel-fb        esp32udp.0.velocity-fb           pid.x.feedback-deriv
+net     x-pos-fb        esp32udp.0.position-fb      pid.x.feedback      joint.0.motor-pos-fb
+net     x-vel-fb        esp32udp.0.velocity-fb      pid.x.feedback-deriv
 net     x-vel-cmd       pid.x.output                esp32udp.0.velocity-cmd
 
-net     x-free-vel-lim    joint.0.free-vel-lim        esp32udp.0.velocity-limit
+net     x-free-vel-lim    joint.0.free-vel-lim      esp32udp.0.velocity-limit
 
 #net     x-pos-cmd       joint.0.motor-pos-cmd       esp32udp.0.position-cmd
-#net     x-pos-fb        esp32udp.0.position-fb           joint.0.motor-pos-fb
+#net     x-pos-fb        esp32udp.0.position-fb      joint.0.motor-pos-fb
 #net     x-vel-cmd       joint.0.vel-cmd             esp32udp.0.velocity-cmd
 
 #======= Y axis ===========================
-
 net     y-pos-cmd       joint.1.motor-pos-cmd       pid.y.command       esp32udp.1.position-cmd
 net     y-vel-cmd-pre   joint.1.vel-cmd             pid.y.command-deriv
-net     y-pos-fb        esp32udp.1.position-fb           pid.y.feedback      joint.1.motor-pos-fb
-net     y-vel-fb        esp32udp.1.velocity-fb           pid.y.feedback-deriv
+net     y-pos-fb        esp32udp.1.position-fb      pid.y.feedback      joint.1.motor-pos-fb
+net     y-vel-fb        esp32udp.1.velocity-fb      pid.y.feedback-deriv
 net     y-vel-cmd       pid.y.output                esp32udp.1.velocity-cmd
 
-net     y-free-vel-lim    joint.1.free-vel-lim        esp32udp.1.velocity-limit
+net     y-free-vel-lim    joint.1.free-vel-lim      esp32udp.1.velocity-limit
 
 #net     y-pos-cmd       joint.1.motor-pos-cmd       esp32udp.1.position-cmd
-#net     y-pos-fb        esp32udp.1.position-fb           joint.1.motor-pos-fb
+#net     y-pos-fb        esp32udp.1.position-fb      joint.1.motor-pos-fb
 #net     y-vel-cmd       joint.1.vel-cmd             esp32udp.1.velocity-cmd
 
 #======= Z axis with offset ===============
-
-
 net     z-comp          comp-limit.out              comp-offset.offset
 net     z-pos-cmd       joint.2.motor-pos-cmd       comp-offset.in
 net     z-vel-cmd-pre   joint.2.vel-cmd             pid.z.command-deriv
-net     z-pos-fb        esp32udp.2.position-fb           comp-offset.fb-in   pid.z.feedback
-net     z-vel-fb        esp32udp.2.velocity-fb           pid.z.feedback-deriv
+net     z-pos-fb        esp32udp.2.position-fb      comp-offset.fb-in   pid.z.feedback
+net     z-vel-fb        esp32udp.2.velocity-fb      pid.z.feedback-deriv
 net     z-pos-cmd-comp  comp-offset.out             pid.z.command       esp32udp.2.position-cmd
 net     z-pos-fb-comp   comp-offset.fb-out          joint.2.motor-pos-fb
 net     z-vel-cmd       pid.z.output                esp32udp.2.velocity-cmd
 
-net     z-free-vel-lim    joint.2.free-vel-lim        esp32udp.2.velocity-limit
+net     z-free-vel-lim    joint.2.free-vel-lim      esp32udp.2.velocity-limit
 
 #net     z-comp          comp-limit.out              comp-offset.offset
 #net     z-pos-cmd       joint.2.motor-pos-cmd       comp-offset.in
-#net     z-pos-fb        esp32udp.2.position-fb           comp-offset.fb-in
+#net     z-pos-fb        esp32udp.2.position-fb      comp-offset.fb-in
 #net     z-pos-cmd-comp  comp-offset.out             esp32udp.2.position-cmd
 #net     z-pos-fb-comp   comp-offset.fb-out          joint.2.motor-pos-fb
-#net     z-vel-cmd       joint.2.vel-cmd                esp32udp.2.velocity-cmd
+#net     z-vel-cmd       joint.2.vel-cmd             esp32udp.2.velocity-cmd
 
 #===========================================
-
-
 net     no-estop-a      iocontrol.0.user-enable-out 	no-estop.in0
 net     no-estop-b      esp32udp.connected          	no-estop.in1
 net     no-estop-out    no-estop.out                	iocontrol.0.emc-enable-in
-
 
 net     tool-probes-a      esp32udp.in.02 				tool-probes.in0
 net     tool-probes-b      esp32udp.in.03            	tool-probes.in1
@@ -179,7 +171,6 @@ net     probe-in-pre    tool-probes.out         		probe.debounce.in
 net     probe-in        probe.debounce.out          	motion.probe-input
 
 #===========================================
-
 net     x-home-pre      esp32udp.in.05                 home.x.debounce.in
 net     y-home-pre      esp32udp.in.06                 home.y.debounce.in
 net     z-home-pre      esp32udp.in.04                 home.z.debounce.in
@@ -188,20 +179,15 @@ net     x-home          home.x.debounce.out         	joint.0.home-sw-in
 net     y-home          home.y.debounce.out         	joint.1.home-sw-in
 net     z-home          home.z.debounce.out         	joint.2.home-sw-in
 
-
 #===========================================
-
 #net estop-loop 	iocontrol.0.user-enable-out 	iocontrol.0.emc-enable-in
-
 net     no-estop-out    no-estop.out                iocontrol.0.emc-enable-in
 
 #===========================================
-
 #net     machine-is-on   halui.machine.is-on         esp32udp.out.00 esp32udp.enable
 net     machine-is-on   halui.machine.is-on         esp32udp.out.00 esp32udp.enable  pid.x.enable  pid.y.enable pid.z.enable  
 
 #===========================================
-
 #net     spindle-on      spindle.0.on                esp32udp.out.01
 
 #setp   esp32udp.pwm.01.freq   4000
@@ -217,16 +203,12 @@ net     machine-is-on   halui.machine.is-on         esp32udp.out.00 esp32udp.ena
 #setp pwmgen.0.scale 24000
 
 #===========================================
-
-net     coolant-mist   iocontrol.0.coolant-mist   hal_gpio.PIN31-out
-net     coolant-flood   iocontrol.0.coolant-flood   hal_gpio.PIN33-out
-
+#net     coolant-mist    iocontrol.0.coolant-mist    hal_gpio.PIN31-out
+#net     coolant-flood   iocontrol.0.coolant-flood   hal_gpio.PIN33-out
 
 #===========================================
-
 setp    iocontrol.0.tool-changed                    true
 setp    iocontrol.0.tool-prepared                   true
 
 #setp   esp32udp.pwm.01.freq   2000
 #setp   esp32udp.pwm.01        0.5
-

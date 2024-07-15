@@ -3,7 +3,7 @@
 1) Configure a board via `boardconfig`. Restart the board once set `restart`. Ethernet should initialise if pin maps are correct. 
     For SPI Ethernet; you can use `spiethconfig` command to change pins as needed.
     ```
-    > boardconfig -t 1 -n 3
+    > boardconfig -t 7 -n 3
     Configure stepper motors pins and parameters
     Usage:
     boardconfig [OPTION...]
@@ -17,7 +17,8 @@
                             4 = 'Olimex ESP32-GATEWAY'
                             5 = 'SeedStudio WT32-ETH01'
                             6 = 'MKS-DLC32'
-                            7 = 'Default'
+                            7 = 'ESP32-WROOM-DEV'							
+                            8 = 'Default'
 
     -n, --numsteppers arg  Number of enabled steppers (0-6)
     ```
@@ -53,7 +54,6 @@
     [UDP-SERVER] State: 1, Port: 58000
     [UDP-CLIENT] State: 1, Port: 58001
 
-
     ==========Steppers==========
     Number of Steppers: 4
     Motor[0]: { 'StepPin': 25, 'DirPin': 130, 'EnHighPin': -1, 'EnLowPin': 128, 'AutoEn': 0, 'DirDelay': 1000, 'OnDelayUs': 2000, 'OffDelayMs': 5 }
@@ -61,7 +61,6 @@
     Motor[2]: { 'StepPin': 27, 'DirPin': 132, 'EnHighPin': -1, 'EnLowPin': 128, 'AutoEn': 0, 'DirDelay': 1000, 'OnDelayUs': 2000, 'OffDelayMs': 5 }
     Motor[3]: { 'StepPin': 5, 'DirPin': 33, 'EnHighPin': -1, 'EnLowPin': 128, 'AutoEn': 0, 'DirDelay': 1000, 'OnDelayUs': 2000, 'OffDelayMs': 5 }
     * Uses I2S output for pins. Values > 128 are I2S!
-
 
     ==========Inputs==========
     Input[0]: { 'GPIO': -1, 'UDPInNum': 0, 'Name': 'Unused', 'PullUp': 1, 'PullDown': 0, 'RegAddr': 'GPIO_IN_REG', 'RegBit': 0x00 }
@@ -71,6 +70,8 @@
     Input[4]: { 'GPIO': 34, 'UDPInNum': 4, 'Name': 'Z-', 'PullUp': 1, 'PullDown': 0, 'RegAddr': 'GPIO_IN1_REG', 'RegBit': 0x04 }
     Input[5]: { 'GPIO': 35, 'UDPInNum': 5, 'Name': 'Y-', 'PullUp': 1, 'PullDown': 0, 'RegAddr': 'GPIO_IN1_REG', 'RegBit': 0x08 }
     Input[6]: { 'GPIO': 36, 'UDPInNum': 6, 'Name': 'X-', 'PullUp': 1, 'PullDown': 0, 'RegAddr': 'GPIO_IN1_REG', 'RegBit': 0x10 }
+
+    ==========Outputs=========
     Output[0]: { 'GPIO': 2, 'UDPOutNum': 0, 'Name': 'BlueLed' }
     Output[1]: { 'GPIO': -1, 'UDPOutNum': 1, 'Name': 'Unused' }
     Output[2]: { 'GPIO': -1, 'UDPOutNum': 2, 'Name': 'Unused' }
@@ -147,7 +148,6 @@
 ### SPI Ethernet Firmware Only
 
 Configure SPI Ethernet module pins using `spiethconfig` 
-
 ```
     > spiethconfig --help
     SPI Ethernet Pin Configuration.
@@ -172,115 +172,85 @@ Settings are saved into NVS and will persist during restarts or firmware upgrade
 
 ### Full Help Output
 ```
-help 
-    Print the list of registered commands
+help                Print the list of registered commands
 
-clear  
-    Clears the screen using ANSI codes
+clear               Clears the screen using ANSI codes
 
-history  
-    Shows and clear command history (using -c parameter)
+history             Shows and clear command history (using -c parameter)
 
-echo  
-    Echos the text supplied as argument
+echo                Echos the text supplied as argument
 
-multiline_mode
-    Sets the multiline mode of the console
+multiline_mode      Sets the multiline mode of the console
 
-env
-    List all environment variables.
+env                 List all environment variables.
 
-declare
-    Change enviroment variables
+declare             Change enviroment variables
 
-sysinfo
-    Shows informations about the system like chip model and ESP-IDF version
+sysinfo             Shows informations about the system like chip model and ESP-IDF version
 
-restart
-    Restart / Reboot the system
+restart             Restart / Reboot the system
 
-meminfo
-    Shows information about heap usage
+meminfo             Shows information about heap usage
 
-date
-    Shows and modify the system time
+date                Shows and modify the system time
 
-ping
-    Ping host
+ping                Ping host
 
-ipconfig
-    Show IP and connection informations
+ipconfig            Show IP and connection informations
 
-pinMode
-    Changes the pinmode of an GPIO pin (similar to Arduino function)
+pinMode             Changes the pinmode of an GPIO pin (similar to Arduino function)
 
-digitalRead
-    Reads the state of an input pin (similar to Arduino function)
+digitalRead         Reads the state of an input pin (similar to Arduino function)
 
-digitalWrite
-    Writes the state of an ouput pin (similar to Arduino function)
+digitalWrite        Writes the state of an ouput pin (similar to Arduino function)
 
-analogRead
-    Show the voltage at an analog pin in millivollts.
+analogRead          Show the voltage at an analog pin in millivollts.
 
-setmotor  Use --help option of command for more info
-    Configure stepper motors pins and parameters
+setmotor            Use --help option of command for more info
+                    Configure stepper motors pins and parameters
 
-enablemotorconfig
-    Enable/Disable motor config at startup
+enablemotorconfig   Enable/Disable motor config at startup
 
-getmotor  Use --help option of command for more info
-    Get a stepper motors current config
+getmotor            Use --help option of command for more info
+                    Get a stepper motors current config
 
-stats
-    Loop task communications statistics
+stats               Loop task communications statistics
 
-mode
-    Set device mode to Client or Controller. mode = 'controller' | 'client'.
-    Restart required
+mode                Set device mode to Client or Controller. mode = 'controller' | 'client'.
+                    Restart required
 
-espnow
-    Enable/Disable ESP-NOW wireless P2P link between controller and client ESP32 devices
+espnow              Enable/Disable ESP-NOW wireless P2P link between controller and client ESP32 devices
 
-log
-    Enable / Disable informational logging. 
+log                 Enable / Disable informational logging. 
 
-debug
-    Enable / Disable debug logging.
+debug               Enable / Disable debug logging.
 
-getconfig
-    Read environment configuration from NVS storage
+getconfig           Read environment configuration from NVS storage
 
-saveconfig
-    Save environment configuration to NVS storage
+saveconfig          Save environment configuration to NVS storage
 
-resetconfig
-    Clear/reset NVS configuration to defaults
+resetconfig         Clear/reset NVS configuration to defaults
 
-boardconfig  Use --help option of command for more info
-    Configure stepper motors pins and parameters
+boardconfig         Use --help option of command for more info
+                    Configure stepper motors pins and parameters
 
-wificonfig  Use --help option of command for more info
-    Configure WiFi mode and AP/STA settings
+wificonfig          Use --help option of command for more info
+                    Configure WiFi mode and AP/STA settings
 
-inputconfig  Use --help option of command for more info
-    Configure Input pins and parameters
+inputconfig         Use --help option of command for more info
+                    Configure Input pins and parameters
 
-outputconfig  Use --help option of command for more info
-    Configure Output pins and parameters
+outputconfig        Use --help option of command for more info
+                    Configure Output pins and parameters
 
-firmwareupdate
-    Perform firmware update via WiFi from online repository
+firmwareupdate      Perform firmware update via WiFi from online repository
 
-uptime
-    System uptime in seconds
+uptime              System uptime in seconds
 
-stop
-    Stop processing task loops
+stop                Stop processing task loops
 
-spiethconfig  Use --help option of command for more info
-    SPI Ethernet Pin Configuration.
+spiethconfig        Use --help option of command for more info
+                    SPI Ethernet Pin Configuration.
 
-motormovetest
-    Send debug motor movement for axis for either 'forwards' or 'backwards' moves
+motormovetest       Send debug motor movement for axis for either 'forwards' or 'backwards' moves
 ```

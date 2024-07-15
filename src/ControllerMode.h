@@ -32,6 +32,7 @@
     inline AsyncServer telnetServer(23);
 #endif
 
+/*==================================================================*/
 #if (OUT_00_PIN != GPIO_NUM_NC)
 #undef OUT_00_H
 #define OUT_00_H digitalWrite(OUT_00_PIN, HIGH)
@@ -83,72 +84,69 @@
 #define OUT_05_L digitalWrite(OUT_05_PIN, LOW)
 #endif
 
+    inline FastAccelStepperEngine stepperEngine;
 
-inline FastAccelStepperEngine stepperEngine;
+    inline EventGroupHandle_t eventUDPPacketStateGroup;
+    inline volatile bool motorsSetup = false;
+    inline FastAccelStepper *stepper[MAX_STEPPER];
+    inline hw_timer_t *timerServoCmds = NULL;
+    inline cmdPacket cmd = {0};
+    inline bool debugAxisMovements = false;
+    inline bool motorsMoving = false;
+    inline bool isMovementRunning[MAX_STEPPER] = {false};
+    inline bool prevIsMovementRunning[MAX_STEPPER] = {false};
+    inline volatile uint32_t udp_tx_seq_num = 0;
+    inline volatile uint32_t udp_rx_seq_num = 0;
+    inline volatile uint32_t udpPacketTxErrors = 0;
+    inline volatile uint32_t udpPacketRxErrors = 0;
+    inline volatile uint8_t prev_cmd_control = 0;
 
-inline EventGroupHandle_t  eventUDPPacketStateGroup;
-inline volatile bool motorsSetup = false;
-inline FastAccelStepper *stepper[MAX_STEPPER];
-inline hw_timer_t * timerServoCmds = NULL;
-inline cmdPacket cmd = { 0 };
-inline bool debugAxisMovements = false;
-inline bool motorsMoving = false;
-inline bool isMovementRunning[MAX_STEPPER] = { false };
-inline bool prevIsMovementRunning[MAX_STEPPER] = { false };
-inline volatile uint32_t udp_tx_seq_num = 0;
-inline volatile uint32_t udp_rx_seq_num = 0;
-inline volatile uint32_t udpPacketTxErrors = 0;
-inline volatile uint32_t udpPacketRxErrors = 0;
-inline volatile uint8_t prev_cmd_control = 0;
+    inline volatile uint32_t udpTxLoopCount = 0;
+    inline volatile uint32_t udpRxLoopCount = 0;
+    inline volatile uint32_t servoCmdsLoopCount = 0;
 
-inline volatile uint32_t udpTxLoopCount = 0;
-inline volatile uint32_t udpRxLoopCount = 0;
-inline volatile uint32_t servoCmdsLoopCount = 0;
+    inline volatile unsigned long ul_dirSetup[MAX_STEPPER] = {1000};
 
-inline volatile unsigned long ul_dirSetup[MAX_STEPPER] = { 1000 }; 
-/*==================================================================*/
+    /*==================================================================*/
+    inline volatile uint8_t prevRampState[MAX_STEPPER] = {0}; // Reserved for future use
 
+    inline const double axisVelScaleFactor = 1.02; // Reduce max accel of motors by 2% to ensure FAS command position buffer remains full
 
-inline volatile uint8_t prevRampState[MAX_STEPPER] = {0}; // Reserved for future use
+    inline uint8_t prev_ctrl_ready = false;
 
-inline const double axisVelScaleFactor = 1.02; // Reduce max accel of motors by 2% to ensure FAS command position buffer remains full
+    inline volatile bool machineEnabled = false;
+    inline volatile bool manualMove = false;
+    inline volatile uint8_t axisState[MAX_STEPPER] = {0};
+    inline volatile uint8_t prev_axisState[MAX_STEPPER] = {0};
 
-inline uint8_t prev_ctrl_ready = false;
+    inline long lastMsg_ProfileStats = 0;
 
-inline volatile bool machineEnabled = false;
-inline volatile bool manualMove = false;
-inline volatile uint8_t axisState[MAX_STEPPER] = {0};
-inline volatile uint8_t prev_axisState[MAX_STEPPER] = {0};
+    inline static uint8_t packetBufferTx[UDP_PACKET_BUF_SIZE]; // UDP buffer for sending data
+    inline static uint8_t packetBufferRx[UDP_PACKET_BUF_SIZE]; // UDP buffer for receiving data
+    inline volatile unsigned long ul_udptxrx_watchdog;         /* Nothing RX/TX for 5s triggers watchdog clearing machine state */
 
-inline long lastMsg_ProfileStats = 0;
+    inline IRAM_ATTR xQueueHandle axisStateInterruptQueue;
 
-inline static uint8_t packetBufferTx[UDP_PACKET_BUF_SIZE]; // UDP buffer for sending data
-inline static uint8_t packetBufferRx[UDP_PACKET_BUF_SIZE]; // UDP buffer for receiving data
-inline volatile unsigned long ul_udptxrx_watchdog; /* Nothing RX/TX for 5s triggers watchdog clearing machine state */
-
-inline IRAM_ATTR  xQueueHandle axisStateInterruptQueue;
-
-
-void setupControllerMode();
-void setupControllerModeCore0();
-void stopProcessingController();
-void loop_Core1_EspNowSenderControllerTask(void* parameter);
-void espNowOnDataRecvController(const uint8_t * mac, const uint8_t *incomingData, int len);
-void espnowOnDataSentController(const uint8_t *mac_addr, esp_now_send_status_t status);
-void espNowOnDataRecvControllerMode(const uint8_t * mac, const uint8_t *incomingData, int len);
-void IRAM_ATTR commandHandler();
-void IRAM_ATTR outputHandler();
-size_t IRAM_ATTR sendUDPFeedbackPacket();
-void IRAM_ATTR onUDPRxPacketCallBack(AsyncUDPPacket packet);
-void IRAM_ATTR loop_Core0_UDPSendTask(void* parameter);
-void IRAM_ATTR loop_Core0_CommandHandlerTask(void* parameter);
-void loop_Core1_ServoStatsTask(void* parameter);
-void debugAxisState(uint8_t axisNum);
-void IRAM_ATTR updateAxisState(uint8_t axisNum, uint8_t mask );
-void IRAM_ATTR updateAxisState(uint8_t axisNum, uint8_t bit, bool new_value );
-void IRAM_ATTR ServoMovementCmds_ISR();
-bool fasExternalCallForPin(uint8_t pin, uint8_t value);
-bool setupMotors();
-size_t logMotorDebugMessage(uint8_t row, const char *format, ...);
+    void setupControllerMode();
+    void setupControllerModeCore0();
+    void stopProcessingController();
+    void loop_Core1_EspNowSenderControllerTask(void *parameter);
+    void espNowOnDataRecvController(const uint8_t *mac, const uint8_t *incomingData, int len);
+    void espnowOnDataSentController(const uint8_t *mac_addr, esp_now_send_status_t status);
+    void espNowOnDataRecvControllerMode(const uint8_t *mac, const uint8_t *incomingData, int len);
+    void IRAM_ATTR commandHandler();
+    void IRAM_ATTR outputHandler();
+    size_t IRAM_ATTR sendUDPFeedbackPacket();
+    void IRAM_ATTR onUDPRxPacketCallBack(AsyncUDPPacket packet);
+    void IRAM_ATTR loop_Core0_UDPSendTask(void *parameter);
+    void IRAM_ATTR loop_Core0_CommandHandlerTask(void *parameter);
+    void loop_Core1_ServoStatsTask(void *parameter);
+    void debugAxisState(uint8_t axisNum);
+    void IRAM_ATTR updateAxisState(uint8_t axisNum, uint8_t mask);
+    void IRAM_ATTR updateAxisState(uint8_t axisNum, uint8_t bit, bool new_value);
+    void IRAM_ATTR ServoMovementCmds_ISR();
+    bool fasExternalCallForPin(uint8_t pin, uint8_t value);
+    bool setupMotors();
+    size_t logMotorDebugMessage(uint8_t row, const char *format, ...);
 
 #endif
