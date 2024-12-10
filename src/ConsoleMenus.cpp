@@ -760,10 +760,14 @@ void registerConsoleCmds()
             uint8_t cs_pin = -1;
             uint8_t int_pin = -1;
 
+            printf("Number of arguments argc: %d\r\n", argc);
+
             if (result.count("s")) 
             { 
                 miso_pin = result["s"].as<int>(); 
             }
+
+            printf("Input MISO pin: %d \r\n", miso_pin);
 
             if (miso_pin < 0 || miso_pin > 128 ) 
             { 
@@ -773,8 +777,10 @@ void registerConsoleCmds()
             
             if (result.count("i")) 
             { 
-                miso_pin = result["i"].as<int>(); 
+                mosi_pin = result["i"].as<int>(); 
             }
+
+            printf("Input MOSI pin: %d \r\n", mosi_pin);
 
             if (mosi_pin < 0 || mosi_pin > 128 ) 
             { 
@@ -784,8 +790,10 @@ void registerConsoleCmds()
 
             if (result.count("c")) 
             { 
-                miso_pin = result["c"].as<int>(); 
+                sck_pin = result["c"].as<int>(); 
             }
+
+            printf("Input SCK pin: %d \r\n", mosi_pin);
 
             if (sck_pin < 0 || sck_pin > 128 ) 
             { 
@@ -795,8 +803,10 @@ void registerConsoleCmds()
 
             if (result.count("e")) 
             { 
-                miso_pin = result["e"].as<int>(); 
+                cs_pin = result["e"].as<int>(); 
             }
+
+            printf("Input CS pin: %d \r\n", mosi_pin);
 
             if (cs_pin < 0 || cs_pin > 128 ) 
             { 
@@ -806,8 +816,10 @@ void registerConsoleCmds()
 
             if (result.count("t")) 
             { 
-                miso_pin = result["t"].as<int>(); 
+                int_pin = result["t"].as<int>(); 
             }
+
+            printf("Input INT pin: %d \r\n", mosi_pin);
 
             if (int_pin < 0 || int_pin > 128 ) 
             { 
